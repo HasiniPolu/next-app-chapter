@@ -14,7 +14,162 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_forecasts: {
+        Row: {
+          commodity_id: string
+          confidence: number | null
+          currency: string
+          direction: string | null
+          generated_at: string
+          horizon: string
+          predicted_price: number | null
+          rationale: string | null
+          sentiment: string | null
+        }
+        Insert: {
+          commodity_id: string
+          confidence?: number | null
+          currency?: string
+          direction?: string | null
+          generated_at?: string
+          horizon: string
+          predicted_price?: number | null
+          rationale?: string | null
+          sentiment?: string | null
+        }
+        Update: {
+          commodity_id?: string
+          confidence?: number | null
+          currency?: string
+          direction?: string | null
+          generated_at?: string
+          horizon?: string
+          predicted_price?: number | null
+          rationale?: string | null
+          sentiment?: string | null
+        }
+        Relationships: []
+      }
+      price_history: {
+        Row: {
+          commodity_id: string
+          currency: string
+          fetched_at: string
+          series: Json
+          timeframe: string
+        }
+        Insert: {
+          commodity_id: string
+          currency: string
+          fetched_at?: string
+          series: Json
+          timeframe: string
+        }
+        Update: {
+          commodity_id?: string
+          currency?: string
+          fetched_at?: string
+          series?: Json
+          timeframe?: string
+        }
+        Relationships: []
+      }
+      price_snapshots: {
+        Row: {
+          change_abs: number | null
+          change_pct: number | null
+          commodity_id: string
+          currency: string
+          fetched_at: string
+          high_24h: number | null
+          low_24h: number | null
+          price: number
+          sparkline: Json | null
+        }
+        Insert: {
+          change_abs?: number | null
+          change_pct?: number | null
+          commodity_id: string
+          currency: string
+          fetched_at?: string
+          high_24h?: number | null
+          low_24h?: number | null
+          price: number
+          sparkline?: Json | null
+        }
+        Update: {
+          change_abs?: number | null
+          change_pct?: number | null
+          commodity_id?: string
+          currency?: string
+          fetched_at?: string
+          high_24h?: number | null
+          low_24h?: number | null
+          price?: number
+          sparkline?: Json | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          currency: string
+          display_name: string | null
+          id: string
+          plan: string
+          stripe_customer_id: string | null
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          currency?: string
+          display_name?: string | null
+          id: string
+          plan?: string
+          stripe_customer_id?: string | null
+          theme?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          currency?: string
+          display_name?: string | null
+          id?: string
+          plan?: string
+          stripe_customer_id?: string | null
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      watchlist: {
+        Row: {
+          commodity_id: string
+          created_at: string
+          id: string
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          commodity_id: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          commodity_id?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
