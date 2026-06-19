@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getCommodity } from "./commodities";
+import { getAsset } from "./assets";
 
 const HORIZONS = ["24H", "7D", "30D"] as const;
 type Horizon = (typeof HORIZONS)[number];
@@ -52,8 +52,8 @@ export const getAiForecast = createServerFn({ method: "POST" })
     z.object({ id: z.string(), horizon: z.enum(HORIZONS) }).parse(d),
   )
   .handler(async ({ data }) => {
-    const c = getCommodity(data.id);
-    if (!c) throw new Error("Unknown commodity");
+    const c = getAsset(data.id);
+    if (!c) throw new Error("Unknown asset");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Check cache
