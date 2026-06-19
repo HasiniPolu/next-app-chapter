@@ -81,3 +81,40 @@ export const deleteAlert = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
+
+export const evaluateMyAlerts = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: alerts, error } = await context.supabase
+      .from("alerts")
+      .select("*")
+      .eq("user_id", context.userId)
+      .eq("active", true)
+      .is("triggered_at", null);
+    if (error) throw error;
+    if (!alerts || alerts.length === 0) return { triggered: 0 };
+
+    const { fetchAllSpotPrices } = await import("./prices.server");
+    const snaps = await fetchAllSpotPrices();
+    const priceById = new Map(snaps.map((s) => [s.commodity_id, s]));
+
+    let triggered = 0;
+    for (const a of alerts) {
+      const snap = priceById.get(a.asset_id);
+      if (!snap) continue;
+      const threshold = Number(a.threshold);
+      let hit = false;
+      if (a.condition === "above" && snap.price >= threshold) hit = true;
+      else if (a.condition === "below" && snap.price <= threshold) hit = true;
+      else if (a.condition === "pct_change" && Math.abs(snap.change_pct) >= threshold) hit = true;
+      if (hit) {
+        await context.supabase
+          .from("alerts")
+          .update({ triggered_at: new Date().toISOString(), triggered_price: snap.price })
+          .eq("id", a.id)
+          .eq("user_id", context.userId);
+        triggered++;
+      }
+    }
+    return { triggered };
+  });

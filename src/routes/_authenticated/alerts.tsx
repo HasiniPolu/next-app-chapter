@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { Suspense } from "react";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { Suspense, useEffect } from "react";
 import { AppShell } from "@/components/BottomNav";
 import { ALL_ASSETS } from "@/lib/assets";
-import { deleteAlert, listAlerts, toggleAlert } from "@/lib/alerts.functions";
+import { deleteAlert, evaluateMyAlerts, listAlerts, toggleAlert } from "@/lib/alerts.functions";
 import { Bell, BellOff, Trash2, ArrowUp, ArrowDown, Percent, CheckCircle2 } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import type { Currency } from "@/lib/commodities";
@@ -28,6 +28,20 @@ function Inner() {
   const alerts = useSuspenseQuery({ queryKey: ["alerts"], queryFn: () => listAlerts() });
   const profile = useSuspenseQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
   const currency = (profile.data?.currency ?? "USD") as Currency;
+
+  // Evaluate the user's alerts every 15s while on this page so triggers fire
+  // without external cron infrastructure.
+  const evalQ = useQuery({
+    queryKey: ["alerts-eval"],
+    queryFn: () => evaluateMyAlerts(),
+    refetchInterval: 15_000,
+    refetchOnWindowFocus: true,
+  });
+  useEffect(() => {
+    if (evalQ.data?.triggered) {
+      qc.invalidateQueries({ queryKey: ["alerts"] });
+    }
+  }, [evalQ.data?.triggered, qc]);
 
   const toggle = useMutation({
     mutationFn: (v: { id: string; active: boolean }) => toggleAlert({ data: v }),
