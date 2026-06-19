@@ -4,7 +4,8 @@ import { Suspense } from "react";
 import { AppShell } from "@/components/BottomNav";
 import { CommodityCard } from "@/components/CommodityCard";
 import { Button } from "@/components/ui/button";
-import { COMMODITIES, type Currency } from "@/lib/commodities";
+import { type Currency } from "@/lib/commodities";
+import { ALL_ASSETS } from "@/lib/assets";
 import { getAllPrices } from "@/lib/prices.functions";
 import { getProfile } from "@/lib/profile.functions";
 import { addToWatchlist, getWatchlist, removeFromWatchlist } from "@/lib/watchlist.functions";
@@ -28,7 +29,11 @@ function WatchlistPage() {
 function Inner() {
   const qc = useQueryClient();
   const profile = useSuspenseQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
-  const prices = useSuspenseQuery({ queryKey: ["prices"], queryFn: () => getAllPrices() });
+  const prices = useSuspenseQuery({
+    queryKey: ["prices"],
+    queryFn: () => getAllPrices(),
+    refetchInterval: 5_000,
+  });
   const watchlist = useSuspenseQuery({ queryKey: ["watchlist"], queryFn: () => getWatchlist() });
   const currency = (profile.data?.currency ?? "USD") as Currency;
   const snapById = new Map(prices.data.snapshots.map((s) => [s.commodity_id, s]));
@@ -45,7 +50,7 @@ function Inner() {
   });
 
   const watchedIds = new Set(watchlist.data.map((w) => w.commodity_id));
-  const available = COMMODITIES.filter((c) => !watchedIds.has(c.id));
+  const available = ALL_ASSETS.filter((c) => !watchedIds.has(c.id));
 
   return (
     <div className="space-y-6 p-4">
@@ -61,7 +66,7 @@ function Inner() {
       ) : (
         <ul className="space-y-2">
           {watchlist.data.map((w) => {
-            const c = COMMODITIES.find((x) => x.id === w.commodity_id);
+            const c = ALL_ASSETS.find((x) => x.id === w.commodity_id);
             const s = c ? snapById.get(c.id) : undefined;
             if (!c || !s) return null;
             return (
