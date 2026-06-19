@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { AppShell } from "@/components/BottomNav";
 import { CommodityCard } from "@/components/CommodityCard";
 import { CURRENCIES, type Currency } from "@/lib/commodities";
+import { type AssetKind } from "@/lib/assets";
 import { getAllPrices } from "@/lib/prices.functions";
 import { getProfile, updateProfile } from "@/lib/profile.functions";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,13 +28,15 @@ function DashboardInner() {
   const prices = useSuspenseQuery({
     queryKey: ["prices"],
     queryFn: () => getAllPrices(),
-    refetchInterval: 60_000,
+    refetchInterval: 5_000,
   });
   const profile = useSuspenseQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
   const qc = useQueryClient();
   const [currency, setCurrency] = useState<Currency>((profile.data?.currency ?? "USD") as Currency);
+  const [kind, setKind] = useState<AssetKind>("commodity");
 
   const snapById = new Map(prices.data.snapshots.map((s) => [s.commodity_id, s]));
+  const visibleAssets = prices.data.commodities.filter((a) => a.kind === kind);
 
   async function changeCurrency(c: Currency) {
     setCurrency(c);
@@ -73,8 +76,22 @@ function DashboardInner() {
         ))}
       </div>
 
+      <div className="-mx-1 mb-1 flex gap-1.5 px-1">
+        {(["commodity", "stock"] as AssetKind[]).map((k) => (
+          <button
+            key={k}
+            onClick={() => setKind(k)}
+            className={`flex-1 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              kind === k ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+            }`}
+          >
+            {k === "commodity" ? "Commodities" : "Stocks"}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-2 gap-3">
-        {prices.data.commodities.map((c) => {
+        {visibleAssets.map((c) => {
           const s = snapById.get(c.id);
           if (!s) return null;
           return (

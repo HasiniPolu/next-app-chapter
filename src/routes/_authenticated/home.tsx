@@ -5,7 +5,8 @@ import { AppShell } from "@/components/BottomNav";
 import { CommodityCard } from "@/components/CommodityCard";
 import { Sparkline } from "@/components/Sparkline";
 import { changeColor, formatChange, formatPrice } from "@/lib/format";
-import { COMMODITIES, FEATURED_IDS, type Currency } from "@/lib/commodities";
+import { FEATURED_IDS, type Currency } from "@/lib/commodities";
+import { ALL_ASSETS } from "@/lib/assets";
 import { getAllPrices, getTopMovers } from "@/lib/prices.functions";
 import { getMarketDigest } from "@/lib/ai.functions";
 import { getProfile } from "@/lib/profile.functions";
@@ -44,9 +45,9 @@ function HomeInner() {
   const { prices, movers, digest, profile, watchlist } = useAll();
   const currency = (profile.data?.currency ?? "USD") as Currency;
   const snapById = new Map(prices.data.snapshots.map((s) => [s.commodity_id, s]));
-  const featured = COMMODITIES.filter((c) => FEATURED_IDS.includes(c.id));
+  const featured = ALL_ASSETS.filter((c) => FEATURED_IDS.includes(c.id));
   const watchedItems = watchlist.data
-    .map((w) => COMMODITIES.find((c) => c.id === w.commodity_id))
+    .map((w) => ALL_ASSETS.find((c) => c.id === w.commodity_id))
     .filter(Boolean);
 
   return (
@@ -171,7 +172,7 @@ function MoversList({
       </div>
       <ul>
         {items.map((item) => {
-          const c = COMMODITIES.find((x) => x.id === item.commodity_id);
+          const c = ALL_ASSETS.find((x) => x.id === item.commodity_id);
           if (!c) return null;
           return (
             <li key={c.id}>
