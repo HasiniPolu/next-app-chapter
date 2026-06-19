@@ -29,7 +29,11 @@ function WatchlistPage() {
 function Inner() {
   const qc = useQueryClient();
   const profile = useSuspenseQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
-  const prices = useSuspenseQuery({ queryKey: ["prices"], queryFn: () => getAllPrices() });
+  const prices = useSuspenseQuery({
+    queryKey: ["prices"],
+    queryFn: () => getAllPrices(),
+    refetchInterval: 5_000,
+  });
   const watchlist = useSuspenseQuery({ queryKey: ["watchlist"], queryFn: () => getWatchlist() });
   const currency = (profile.data?.currency ?? "USD") as Currency;
   const snapById = new Map(prices.data.snapshots.map((s) => [s.commodity_id, s]));

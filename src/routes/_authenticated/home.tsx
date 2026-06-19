@@ -11,8 +11,10 @@ import { getAllPrices, getTopMovers } from "@/lib/prices.functions";
 import { getMarketDigest } from "@/lib/ai.functions";
 import { getProfile } from "@/lib/profile.functions";
 import { getWatchlist } from "@/lib/watchlist.functions";
-import { Bell, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Bell, Sparkles, ArrowUpRight, ArrowDownRight, Newspaper } from "lucide-react";
 import { ThemeButton } from "@/components/ThemeButton";
+import { LiveDot } from "@/components/LiveDot";
+import { NEWS, relativeTime } from "@/lib/news";
 
 export const Route = createFileRoute("/_authenticated/home")({
   component: HomePage,
@@ -22,7 +24,7 @@ function useAll() {
   const prices = useSuspenseQuery({
     queryKey: ["prices"],
     queryFn: () => getAllPrices(),
-    refetchInterval: 60_000,
+    refetchInterval: 5_000,
   });
   const movers = useSuspenseQuery({ queryKey: ["movers"], queryFn: () => getTopMovers() });
   const digest = useSuspenseQuery({ queryKey: ["digest"], queryFn: () => getMarketDigest() });
@@ -59,12 +61,13 @@ function HomeInner() {
             <Sparkles className="h-4 w-4" />
           </div>
           <span className="text-lg font-bold tracking-tight">SentiMarket</span>
+          <LiveDot />
         </div>
         <div className="flex items-center gap-1">
           <ThemeButton />
-          <button aria-label="Notifications" className="rounded-full p-2 hover:bg-accent">
+          <Link to="/alerts" aria-label="Alerts" className="rounded-full p-2 hover:bg-accent">
             <Bell className="h-5 w-5 text-muted-foreground" />
-          </button>
+          </Link>
         </div>
       </header>
 
@@ -130,6 +133,33 @@ function HomeInner() {
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Top movers</h2>
         <MoversList title="Gainers" items={movers.data.gainers} icon={ArrowUpRight} positive currency={currency} />
         <MoversList title="Losers" items={movers.data.losers} icon={ArrowDownRight} positive={false} currency={currency} />
+      </section>
+
+      {/* Latest news rail */}
+      <section>
+        <div className="mb-2 flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Latest news
+          </h2>
+          <Link to="/news" className="text-xs text-primary">See all</Link>
+        </div>
+        <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
+          {NEWS.slice(0, 5).map((n) => (
+            <Link
+              key={n.id}
+              to="/news"
+              className="block w-64 shrink-0 rounded-2xl border border-border bg-card p-3"
+            >
+              <div className="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                <Newspaper className="h-3 w-3" />
+                <span className="font-semibold text-foreground/80">{n.source}</span>
+                <span>·</span>
+                <span>{relativeTime(n.publishedAt)}</span>
+              </div>
+              <p className="line-clamp-3 text-sm font-medium leading-snug text-foreground">{n.title}</p>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* AI insight teaser */}
