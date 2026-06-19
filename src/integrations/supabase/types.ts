@@ -50,6 +50,54 @@ export type Database = {
         }
         Relationships: []
       }
+      alerts: {
+        Row: {
+          active: boolean
+          asset_id: string
+          asset_kind: string
+          condition: string
+          created_at: string
+          currency: string
+          id: string
+          note: string | null
+          threshold: number
+          triggered_at: string | null
+          triggered_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          asset_id: string
+          asset_kind?: string
+          condition: string
+          created_at?: string
+          currency?: string
+          id?: string
+          note?: string | null
+          threshold: number
+          triggered_at?: string | null
+          triggered_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          asset_id?: string
+          asset_kind?: string
+          condition?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          note?: string | null
+          threshold?: number
+          triggered_at?: string | null
+          triggered_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       price_history: {
         Row: {
           commodity_id: string
@@ -148,6 +196,7 @@ export type Database = {
       }
       watchlist: {
         Row: {
+          asset_kind: string
           commodity_id: string
           created_at: string
           id: string
@@ -155,6 +204,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          asset_kind?: string
           commodity_id: string
           created_at?: string
           id?: string
@@ -162,6 +212,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          asset_kind?: string
           commodity_id?: string
           created_at?: string
           id?: string
