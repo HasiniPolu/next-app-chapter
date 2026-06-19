@@ -1,4 +1,5 @@
-import { COMMODITIES, type Commodity, type Timeframe, TIMEFRAME_POINTS } from "./commodities";
+import { ALL_ASSETS, type Asset } from "./assets";
+import { type Timeframe, TIMEFRAME_POINTS } from "./commodities";
 
 /**
  * Server-side price provider.
@@ -37,6 +38,7 @@ export interface PriceSnapshot {
   low_24h: number;
   sparkline: number[];
   fetched_at: string;
+  kind?: "commodity" | "stock";
 }
 
 export interface PricePoint {
@@ -48,42 +50,38 @@ export interface PricePoint {
   v: number;
 }
 
-function generateSeries(c: Commodity, points: number, dayOffset = 0): PricePoint[] {
-  const seedKey = `${c.id}-${Math.floor(Date.now() / (1000 * 60 * 60 * 24)) + dayOffset}`;
-  const rand = mulberry32(hashStr(seedKey));
-  const vol = c.basePrice * 0.012;
+/**
+ * Build a continuous random-walk price series anchored at the current 5-second
+ * tick. The seed is the asset id only, so each refresh extends the walk —
+ * giving a live, 24/7 ticker feel even without a real market feed.
+ */
+function generateSeries(c: Asset, points: number, stepSec?: number): PricePoint[] {
+  const vol = c.basePrice * (c.kind === "stock" ? 0.008 : 0.012);
   const out: PricePoint[] = [];
-  let price = c.basePrice * (0.95 + rand() * 0.1);
   const now = Math.floor(Date.now() / 1000);
-  const stepSec = Math.max(60, Math.floor((86400 * 365) / 260));
+  const step = stepSec ?? Math.max(60, Math.floor((86400 * 365) / Math.max(60, points)));
+  // Start from a per-asset deterministic baseline, then walk forward with
+  // time-bucketed randomness so each call yields a new but continuous series.
+  const baseRand = mulberry32(hashStr(c.id));
+  let price = c.basePrice * (0.95 + baseRand() * 0.1);
   for (let i = 0; i < points; i++) {
+    const t = now - (points - 1 - i) * step;
+    const bucket = Math.floor(t / Math.max(5, step));
+    const rand = mulberry32(hashStr(`${c.id}-${bucket}`));
     const drift = (rand() - 0.5) * vol;
     const o = price;
     const c2 = Math.max(0.01, price + drift);
     const h = Math.max(o, c2) + rand() * vol * 0.6;
     const l = Math.min(o, c2) - rand() * vol * 0.6;
     price = c2;
-    out.push({
-      t: now - (points - i) * stepSec,
-      o,
-      h,
-      l,
-      c: c2,
-      v: Math.floor(rand() * 100000),
-    });
+    out.push({ t, o, h, l, c: c2, v: Math.floor(rand() * 100000) });
   }
   return out;
 }
 
-export async function fetchSpotPrice(c: Commodity): Promise<PriceSnapshot> {
-  // Real-provider hook: replace this block with your live API call.
-  // Example (gold-api.com, no key):
-  // if (c.symbol === "XAU" || c.symbol === "XAG") {
-  //   const r = await fetch(`https://api.gold-api.com/price/${c.symbol}`);
-  //   const j = await r.json();
-  //   ...
-  // }
-  const series = generateSeries(c, 24);
+export async function fetchSpotPrice(c: Asset): Promise<PriceSnapshot> {
+  // 24 1-hour buckets for the rolling 24h window (sparkline).
+  const series = generateSeries(c, 24, 3600);
   const last = series[series.length - 1].c;
   const first = series[0].c;
   const change_abs = last - first;
@@ -99,14 +97,22 @@ export async function fetchSpotPrice(c: Commodity): Promise<PriceSnapshot> {
     low_24h: Math.min(...lows),
     sparkline: series.map((p) => p.c),
     fetched_at: new Date().toISOString(),
+    kind: c.kind,
   };
 }
 
 export async function fetchAllSpotPrices(): Promise<PriceSnapshot[]> {
-  return Promise.all(COMMODITIES.map(fetchSpotPrice));
+  return Promise.all(ALL_ASSETS.map(fetchSpotPrice));
 }
 
-export async function fetchHistory(c: Commodity, tf: Timeframe): Promise<PricePoint[]> {
+export async function fetchHistory(c: Asset, tf: Timeframe): Promise<PricePoint[]> {
   const points = TIMEFRAME_POINTS[tf];
-  return generateSeries(c, points);
+  const stepSec =
+    tf === "1D" ? 3600 :
+    tf === "1W" ? 4 * 3600 :
+    tf === "1M" ? 86400 :
+    tf === "3M" ? 86400 :
+    tf === "6M" ? 86400 :
+    /* 1Y */     86400;
+  return generateSeries(c, points, stepSec);
 }
