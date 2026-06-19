@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, BarChart3, TrendingUp, Newspaper, User } from "lucide-react";
+import { Home, BarChart3, TrendingUp, Bell, User } from "lucide-react";
 
 const ITEMS = [
   { to: "/home", label: "Home", icon: Home },
   { to: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { to: "/trends", label: "Trends", icon: TrendingUp },
-  { to: "/news", label: "News", icon: Newspaper },
+  { to: "/alerts", label: "Alerts", icon: Bell },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
