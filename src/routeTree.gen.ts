@@ -22,6 +22,7 @@ import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/h
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedCommodityIdRouteImport } from './routes/_authenticated/commodity.$id'
+import { Route as ApiPublicHooksEvaluateAlertsRouteImport } from './routes/api/public/hooks/evaluate-alerts'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -88,6 +89,12 @@ const AuthenticatedCommodityIdRoute =
     path: '/commodity/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiPublicHooksEvaluateAlertsRoute =
+  ApiPublicHooksEvaluateAlertsRouteImport.update({
+    id: '/api/public/hooks/evaluate-alerts',
+    path: '/api/public/hooks/evaluate-alerts',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/trends': typeof AuthenticatedTrendsRoute
   '/watchlist': typeof AuthenticatedWatchlistRoute
   '/commodity/$id': typeof AuthenticatedCommodityIdRoute
+  '/api/public/hooks/evaluate-alerts': typeof ApiPublicHooksEvaluateAlertsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -116,6 +124,7 @@ export interface FileRoutesByTo {
   '/trends': typeof AuthenticatedTrendsRoute
   '/watchlist': typeof AuthenticatedWatchlistRoute
   '/commodity/$id': typeof AuthenticatedCommodityIdRoute
+  '/api/public/hooks/evaluate-alerts': typeof ApiPublicHooksEvaluateAlertsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -132,6 +141,7 @@ export interface FileRoutesById {
   '/_authenticated/trends': typeof AuthenticatedTrendsRoute
   '/_authenticated/watchlist': typeof AuthenticatedWatchlistRoute
   '/_authenticated/commodity/$id': typeof AuthenticatedCommodityIdRoute
+  '/api/public/hooks/evaluate-alerts': typeof ApiPublicHooksEvaluateAlertsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/trends'
     | '/watchlist'
     | '/commodity/$id'
+    | '/api/public/hooks/evaluate-alerts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/trends'
     | '/watchlist'
     | '/commodity/$id'
+    | '/api/public/hooks/evaluate-alerts'
   id:
     | '__root__'
     | '/'
@@ -177,6 +189,7 @@ export interface FileRouteTypes {
     | '/_authenticated/trends'
     | '/_authenticated/watchlist'
     | '/_authenticated/commodity/$id'
+    | '/api/public/hooks/evaluate-alerts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +197,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicHooksEvaluateAlertsRoute: typeof ApiPublicHooksEvaluateAlertsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -279,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCommodityIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/hooks/evaluate-alerts': {
+      id: '/api/public/hooks/evaluate-alerts'
+      path: '/api/public/hooks/evaluate-alerts'
+      fullPath: '/api/public/hooks/evaluate-alerts'
+      preLoaderRoute: typeof ApiPublicHooksEvaluateAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -315,6 +336,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicHooksEvaluateAlertsRoute: ApiPublicHooksEvaluateAlertsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
