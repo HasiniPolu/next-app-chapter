@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useState } from "react";
-import { ArrowLeft, Star, Sparkles, Lock } from "lucide-react";
+import { ArrowLeft, Star, Sparkles, Lock, Bell } from "lucide-react";
 import { AppShell } from "@/components/BottomNav";
 import { PriceChart } from "@/components/PriceChart";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import { getProfile } from "@/lib/profile.functions";
 import { getAiForecast } from "@/lib/ai.functions";
 import { addToWatchlist, getWatchlist, removeFromWatchlist } from "@/lib/watchlist.functions";
 import { toast } from "sonner";
+import { LiveDot } from "@/components/LiveDot";
+import { useFlash } from "@/hooks/useFlash";
+import { AlertSheet } from "@/components/AlertSheet";
 
 export const Route = createFileRoute("/_authenticated/commodity/$id")({
   component: CommodityDetailPage,
@@ -32,6 +35,7 @@ function Inner() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [tf, setTf] = useState<Timeframe>("1M");
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const profile = useSuspenseQuery({ queryKey: ["profile"], queryFn: () => getProfile() });
   const currency = (profile.data?.currency ?? "USD") as Currency;
@@ -40,7 +44,7 @@ function Inner() {
   const detail = useSuspenseQuery({
     queryKey: ["commodity", id, tf],
     queryFn: () => getCommodityDetail({ data: { id, timeframe: tf } }),
-    refetchInterval: 60_000,
+    refetchInterval: 5_000,
   });
 
   const watchlist = useSuspenseQuery({ queryKey: ["watchlist"], queryFn: () => getWatchlist() });
@@ -57,6 +61,8 @@ function Inner() {
 
   const { commodity: c, snapshot: s, history } = detail.data;
   const positive = s.change_pct >= 0;
+  const flash = useFlash(s.price);
+  const priceFlash = flash === "up" ? "text-positive" : flash === "down" ? "text-negative" : "";
 
   return (
     <div className="pb-12">
@@ -66,11 +72,29 @@ function Inner() {
         </button>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-lg">{c.icon}</span>
+            {c.icon ? (
+              <span className="text-lg">{c.icon}</span>
+            ) : (
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary/10 text-[10px] font-bold text-primary">
+                {c.symbol.slice(0, 2)}
+              </span>
+            )}
             <span className="font-semibold">{c.name}</span>
+            {c.kind === "stock" && (
+              <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary">
+                Stock
+              </span>
+            )}
           </div>
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{c.symbol} · {c.exchange}</div>
         </div>
+        <button
+          onClick={() => setAlertOpen(true)}
+          aria-label="Create alert"
+          className="rounded-full p-2 text-muted-foreground hover:bg-accent hover:text-primary"
+        >
+          <Bell className="h-5 w-5" />
+        </button>
         <button
           onClick={() => toggle.mutate()}
           aria-label="Toggle watchlist"
@@ -82,13 +106,19 @@ function Inner() {
 
       <div className="space-y-6 p-4">
         <section>
-          <div className="num text-4xl font-bold">{formatPrice(s.price, currency)}</div>
+          <div className="flex items-center gap-2">
+            <LiveDot />
+            <span className="text-[10px] text-muted-foreground">
+              updated {new Date(s.fetched_at).toLocaleTimeString()}
+            </span>
+          </div>
+          <div className={`num mt-1 text-4xl font-bold transition-colors duration-700 ${priceFlash}`}>
+            {formatPrice(s.price, currency)}
+          </div>
           <div className={`num mt-1 text-sm font-medium ${changeColor(s.change_pct)}`}>
             {formatPrice(s.change_abs, currency)} · {formatChange(s.change_pct)}
           </div>
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            per {c.unit} · updated {new Date(s.fetched_at).toLocaleTimeString()}
-          </p>
+          <p className="mt-1 text-[11px] text-muted-foreground">per {c.unit}</p>
         </section>
 
         <section>
@@ -127,6 +157,9 @@ function Inner() {
           </p>
         </section>
       </div>
+      {alertOpen && (
+        <AlertSheet asset={c} currentPrice={s.price} onClose={() => setAlertOpen(false)} />
+      )}
     </div>
   );
 }
