@@ -19,9 +19,9 @@ export function PriceChart({
   }));
   const stroke = positive ? "var(--positive)" : "var(--negative)";
   return (
-    <div className="h-64 w-full">
+    <div className="relative h-64 w-full min-w-0 overflow-hidden rounded-2xl border border-border bg-card p-2">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={series} margin={{ top: 6, right: 12, left: 0, bottom: 0 }}>
+        <AreaChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="pc-grad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={stroke} stopOpacity={0.35} />
@@ -31,12 +31,16 @@ export function PriceChart({
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis
             dataKey="t"
-            tickFormatter={(t) => new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+            tickFormatter={(t) => {
+              const d = new Date(t);
+              return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+            }}
             stroke="var(--muted-foreground)"
             fontSize={10}
             tickLine={false}
             axisLine={false}
             minTickGap={40}
+            padding={{ left: 8, right: 8 }}
           />
           <YAxis
             domain={["auto", "auto"]}
@@ -44,8 +48,8 @@ export function PriceChart({
             fontSize={10}
             tickLine={false}
             axisLine={false}
-            width={50}
-            tickFormatter={(v) => v.toFixed(0)}
+            width={44}
+            tickFormatter={(v) => (v >= 1000 ? v.toFixed(0) : v.toFixed(2))}
           />
           <Tooltip
             contentStyle={{
