@@ -30,7 +30,7 @@ export function CommodityCard({
     <Link
       to="/commodity/$id"
       params={{ id: commodity.id }}
-      className={`group block rounded-2xl border border-border bg-card p-4 transition-colors duration-700 hover:border-primary/40 ${flashClass} ${
+      className={`group block overflow-hidden rounded-2xl border border-border bg-card p-4 transition-colors duration-700 hover:border-primary/40 ${flashClass} ${
         compact ? "min-w-[170px]" : ""
       }`}
     >
