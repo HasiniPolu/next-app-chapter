@@ -65,7 +65,7 @@ export function CommodityCard({
             {formatChange(changePct)}
           </div>
         </div>
-        <div className="h-12 w-20 shrink-0">
+        <div className="h-12 w-20 shrink-0 overflow-hidden rounded-md">
           <Sparkline data={sparkline} positive={positive} />
         </div>
       </div>
