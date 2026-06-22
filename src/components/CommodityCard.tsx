@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import type { Currency } from "@/lib/commodities";
 import type { Asset } from "@/lib/assets";
 import { changeColor, formatChange, formatPrice } from "@/lib/format";
-import { Sparkline } from "./Sparkline";
 import { useFlash } from "@/hooks/useFlash";
 
 export interface CommodityCardProps {
@@ -64,9 +63,6 @@ export function CommodityCard({
           <div className={`num text-xs font-medium ${changeColor(changePct)}`}>
             {formatChange(changePct)}
           </div>
-        </div>
-        <div className="h-12 w-20 shrink-0 overflow-hidden rounded-md">
-          <Sparkline data={sparkline} positive={positive} />
         </div>
       </div>
     </Link>
