@@ -208,12 +208,15 @@ function MoversList({
   currency: Currency;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card">
-      <div className="flex items-center gap-1.5 border-b border-border px-4 py-2 text-xs font-semibold">
-        <Icon className={`h-3.5 w-3.5 ${positive ? "text-positive" : "text-negative"}`} />
-        {title}
+    <div className="overflow-hidden rounded-2xl border border-border bg-card">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+        <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-kicker">
+          <Icon className={`h-3 w-3 ${positive ? "text-positive" : "text-negative"}`} />
+          {title}
+        </div>
+        <span className="num text-[9px] uppercase tracking-kicker text-muted-foreground">24h</span>
       </div>
-      <ul>
+      <ul className="divide-y divide-border/60">
         {items.map((item) => {
           const c = ALL_ASSETS.find((x) => x.id === item.commodity_id);
           if (!c) return null;
@@ -222,13 +225,16 @@ function MoversList({
               <Link
                 to="/commodity/$id"
                 params={{ id: c.id }}
-                className="flex items-center gap-3 px-4 py-2.5 hover:bg-accent"
+                className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/60"
               >
                 <span className="text-base">{c.icon}</span>
-                <span className="flex-1 text-sm font-medium">{c.name}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-display text-base leading-tight">{c.name}</div>
+                  <div className="num text-[10px] uppercase tracking-kicker text-muted-foreground">{c.symbol}</div>
+                </div>
                 <div className="text-right">
-                  <div className="num text-sm font-semibold">{formatPrice(item.price, currency)}</div>
-                  <div className={`num text-[11px] ${changeColor(item.change_pct)}`}>{formatChange(item.change_pct)}</div>
+                  <div className="num text-sm font-medium tabular-nums">{formatPrice(item.price, currency)}</div>
+                  <div className={`num text-[11px] tabular-nums ${changeColor(item.change_pct)}`}>{formatChange(item.change_pct)}</div>
                 </div>
               </Link>
             </li>
