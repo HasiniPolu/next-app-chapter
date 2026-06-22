@@ -61,10 +61,7 @@ function HomeInner() {
           </div>
           <div className="leading-tight">
             <div className="font-display text-lg">SentiMarket</div>
-            <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-kicker text-muted-foreground">
-              <LiveDot />
-              <span>Live markets</span>
-            </div>
+            <LiveDot label="Live markets" />
           </div>
         </div>
         <div className="flex items-center gap-1">
