@@ -12,7 +12,7 @@ const ITEMS = [
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/85 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]">
       <ul className="mx-auto flex max-w-md items-stretch justify-around">
         {ITEMS.map(({ to, label, icon: Icon }) => {
           const active = pathname === to || pathname.startsWith(to + "/");
@@ -20,12 +20,15 @@ export function BottomNav() {
             <li key={to} className="flex-1">
               <Link
                 to={to}
-                className={`flex h-16 flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors ${
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                className={`group relative flex h-16 flex-col items-center justify-center gap-1 text-[10px] font-medium tracking-wide transition-colors ${
+                  active ? "text-gold" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 1.8} />
-                <span>{label}</span>
+                {active && (
+                  <span className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
+                )}
+                <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.2 : 1.6} />
+                <span className="text-[10px]">{label}</span>
               </Link>
             </li>
           );
