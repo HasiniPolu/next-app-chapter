@@ -3,7 +3,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { AppShell } from "@/components/BottomNav";
 import { CommodityCard } from "@/components/CommodityCard";
-import { Sparkline } from "@/components/Sparkline";
 import { changeColor, formatChange, formatPrice } from "@/lib/format";
 import { FEATURED_IDS, type Currency } from "@/lib/commodities";
 import { ALL_ASSETS } from "@/lib/assets";
