@@ -55,12 +55,17 @@ function HomeInner() {
     <div className="space-y-6 p-4">
       {/* Top bar */}
       <header className="flex items-center justify-between pt-2">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-gold to-gold/60 text-gold-foreground shadow-[0_4px_14px_-4px_color-mix(in_oklab,var(--gold)_60%,transparent)]">
             <Sparkles className="h-4 w-4" />
           </div>
-          <span className="text-lg font-bold tracking-tight">SentiMarket</span>
-          <LiveDot />
+          <div className="leading-tight">
+            <div className="font-display text-lg">SentiMarket</div>
+            <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-kicker text-muted-foreground">
+              <LiveDot />
+              <span>Live markets</span>
+            </div>
+          </div>
         </div>
         <div className="flex items-center gap-1">
           <ThemeButton />
@@ -70,17 +75,22 @@ function HomeInner() {
         </div>
       </header>
 
-      {/* Greeting */}
-      <section>
-        <h1 className="text-2xl font-bold leading-tight">{digest.data.greeting}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{digest.data.digest}</p>
+      {/* Editorial header */}
+      <section className="border-b border-border pb-5">
+        <div className="num text-[10px] uppercase tracking-kicker text-gold">
+          {new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
+        </div>
+        <h1 className="font-display mt-1.5 text-4xl leading-[1.05] text-foreground">
+          {digest.data.greeting}
+        </h1>
+        <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">{digest.data.digest}</p>
       </section>
 
       {/* Watchlist scroller */}
       <section>
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Your watchlist</h2>
-          <Link to="/watchlist" className="text-xs text-primary">Manage</Link>
+        <div className="mb-3 flex items-end justify-between">
+          <h2 className="text-[10px] font-semibold uppercase tracking-kicker text-muted-foreground">Your watchlist</h2>
+          <Link to="/watchlist" className="num text-[10px] uppercase tracking-kicker text-gold hover:underline">Manage →</Link>
         </div>
         {watchedItems.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border p-6 text-center">
@@ -109,7 +119,7 @@ function HomeInner() {
 
       {/* Featured grid */}
       <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Featured</h2>
+        <h2 className="mb-3 text-[10px] font-semibold uppercase tracking-kicker text-muted-foreground">Featured</h2>
         <div className="grid grid-cols-2 gap-3">
           {featured.map((c) => {
             const s = snapById.get(c.id)!;
@@ -129,18 +139,16 @@ function HomeInner() {
 
       {/* Top movers */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Top movers</h2>
+        <h2 className="text-[10px] font-semibold uppercase tracking-kicker text-muted-foreground">Top movers</h2>
         <MoversList title="Gainers" items={movers.data.gainers} icon={ArrowUpRight} positive currency={currency} />
         <MoversList title="Losers" items={movers.data.losers} icon={ArrowDownRight} positive={false} currency={currency} />
       </section>
 
       {/* Latest news rail */}
       <section>
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Latest news
-          </h2>
-          <Link to="/news" className="text-xs text-primary">See all</Link>
+        <div className="mb-3 flex items-end justify-between">
+          <h2 className="text-[10px] font-semibold uppercase tracking-kicker text-muted-foreground">Latest news</h2>
+          <Link to="/news" className="num text-[10px] uppercase tracking-kicker text-gold hover:underline">See all →</Link>
         </div>
         <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
           {NEWS.slice(0, 5).map((n) => (
@@ -166,14 +174,20 @@ function HomeInner() {
         <Link
           to="/commodity/$id"
           params={{ id: "gold" }}
-          className="block rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-4"
+          className="relative block overflow-hidden rounded-2xl border border-gold/30 bg-gradient-to-br from-gold/12 via-card to-card p-5"
         >
-          <div className="mb-1 flex items-center gap-2 text-xs uppercase tracking-wider text-primary">
-            <Sparkles className="h-3.5 w-3.5" /> AI Insight · powered by GPT-4o
+          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gold/15 blur-2xl" />
+          <div className="relative">
+            <div className="mb-2 flex items-center gap-1.5 text-[10px] uppercase tracking-kicker text-gold">
+              <Sparkles className="h-3 w-3" /> AI Insight · GPT-4o
+            </div>
+            <p className="font-display text-xl leading-snug text-foreground">
+              Live forecasts for every asset.
+            </p>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+              Tap any commodity to see 24h, 7d and 30d projections with confidence scores and rationale.
+            </p>
           </div>
-          <p className="text-sm text-foreground">
-            Tap any commodity to see live AI forecasts for 24h, 7d and 30d, with confidence scores and rationale.
-          </p>
         </Link>
       </section>
     </div>
