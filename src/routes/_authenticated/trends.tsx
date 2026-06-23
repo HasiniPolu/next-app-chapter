@@ -8,6 +8,7 @@ import { ALL_ASSETS } from "@/lib/assets";
 import { TIMEFRAMES, type Timeframe, type Currency } from "@/lib/commodities";
 import { getProfile } from "@/lib/profile.functions";
 import { changeColor, formatChange, formatPrice } from "@/lib/format";
+import { Sparkline } from "@/components/Sparkline";
 import { ArrowDownRight, ArrowUpRight, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/trends")({
@@ -248,6 +249,9 @@ function MoversCard({
               >
                 <span className="text-base">{a.icon || a.symbol.slice(0, 2)}</span>
                 <span className="flex-1 truncate text-sm font-medium">{a.name}</span>
+                <div className="h-7 w-14 shrink-0">
+                  <Sparkline data={item.sparkline} positive={item.change_pct >= 0} />
+                </div>
                 <div className="text-right">
                   <div className="num text-sm font-semibold">{formatPrice(item.price, currency)}</div>
                   <div className={`num text-[11px] ${changeColor(item.change_pct)}`}>

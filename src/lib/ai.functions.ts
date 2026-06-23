@@ -92,7 +92,6 @@ Respond with JSON: {
       const raw = await callOpenAI(prompt);
       result = JSON.parse(raw);
     } catch (e) {
-      console.error("AI forecast generation failed", e);
       // Fallback heuristic forecast if AI call fails
       const drift = snap.change_pct / 100;
       const horizonMult = data.horizon === "24H" ? 0.4 : data.horizon === "7D" ? 1.5 : 4;
@@ -101,7 +100,7 @@ Respond with JSON: {
         predicted_price: predicted,
         direction: drift > 0.001 ? "up" : drift < -0.001 ? "down" : "flat",
         confidence: 0.45,
-        rationale: `Heuristic forecast based on recent ${data.horizon} momentum. Live AI rationale temporarily unavailable.`,
+        rationale: `Forecast based on recent ${data.horizon} momentum. AI service unavailable (${(e as Error).message.slice(0, 80)}). This is a heuristic fallback.`,
         sentiment: drift > 0 ? "bullish" : drift < 0 ? "bearish" : "neutral",
       };
     }
