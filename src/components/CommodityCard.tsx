@@ -29,51 +29,41 @@ export function CommodityCard({
     <Link
       to="/commodity/$id"
       params={{ id: commodity.id }}
-      className={`group relative block overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-500 hover:border-gold/50 hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--gold)_25%,transparent),0_18px_40px_-20px_color-mix(in_oklab,var(--gold)_30%,transparent)] ${flashClass} ${
-        compact ? "min-w-[180px]" : ""
+      className={`group block overflow-hidden rounded-2xl border border-border bg-card p-4 transition-colors duration-700 hover:border-primary/40 ${flashClass} ${
+        compact ? "min-w-[170px]" : ""
       }`}
     >
-      {/* Top row: ticker + kind badge */}
       <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
+        <div>
           <div className="flex items-center gap-2">
             {commodity.icon ? (
-              <span className="text-base leading-none">{commodity.icon}</span>
+              <span className="text-base">{commodity.icon}</span>
             ) : (
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-gold/15 text-[10px] font-semibold text-gold">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-primary/10 text-[10px] font-bold text-primary">
                 {commodity.symbol.slice(0, 2)}
               </span>
             )}
-            <span className="num text-[10px] font-medium uppercase tracking-kicker text-muted-foreground">
-              {commodity.symbol}
-            </span>
+            <span className="text-sm font-semibold text-foreground">{commodity.name}</span>
           </div>
-          <div className="mt-1.5 truncate font-display text-lg text-foreground">
-            {commodity.name}
-          </div>
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            {commodity.symbol} · {commodity.unit}
+          </span>
         </div>
-        <span
-          className={`num shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
-            positive
-              ? "bg-positive/15 text-positive"
-              : "bg-negative/15 text-negative"
-          }`}
-        >
-          {formatChange(changePct)}
-        </span>
+        {commodity.kind === "stock" && (
+          <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary">
+            Stock
+          </span>
+        )}
       </div>
-
-      {/* Hairline divider */}
-      <div className="mt-3 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
-
-      {/* Price row */}
-      <div className="mt-3 flex items-baseline justify-between gap-2">
-        <div className={`num text-[22px] font-medium tracking-tight ${changeColor(changePct)}`}>
-          {formatPrice(price, currency)}
+      <div className="mt-3 flex items-end justify-between gap-2">
+        <div>
+          <div className="num text-xl font-semibold text-foreground">
+            {formatPrice(price, currency)}
+          </div>
+          <div className={`num text-xs font-medium ${changeColor(changePct)}`}>
+            {formatChange(changePct)}
+          </div>
         </div>
-        <span className="text-[10px] uppercase tracking-kicker text-muted-foreground/70">
-          {commodity.unit}
-        </span>
       </div>
     </Link>
   );

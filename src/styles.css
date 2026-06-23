@@ -8,18 +8,13 @@
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
 @import "@fontsource/jetbrains-mono/700.css";
-@import "@fontsource/work-sans/400.css";
-@import "@fontsource/work-sans/500.css";
-@import "@fontsource/work-sans/600.css";
-@import "@fontsource/work-sans/700.css";
-@import "@fontsource/instrument-serif/400.css";
-@import "@fontsource/instrument-serif/400-italic.css";
 
 @custom-variant dark (&:is(.dark *));
 
 html, body {
   overflow-x: hidden;
 }
+/* Hide scrollbars globally (page-level chrome + inner overflow rails) */
 *, *::before, *::after {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -30,6 +25,20 @@ html, body {
   display: none !important;
   background: transparent;
 }
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -78,106 +87,100 @@ html, body {
   --color-negative-foreground: var(--negative-foreground);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
-  --color-gold: var(--gold);
-  --color-gold-foreground: var(--gold-foreground);
-  --font-sans: "Work Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
 }
 
 :root {
-  --radius: 0.875rem;
-  /* Light theme — Cream paper, navy ink, warm gold */
-  --background: oklch(0.985 0.006 80);
-  --foreground: oklch(0.18 0.04 255);
+  --radius: 0.75rem;
+  /* Light theme — Off-White surfaces, deep indigo accents */
+  --background: oklch(0.984 0.004 260);
+  --foreground: oklch(0.18 0.04 270);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.04 255);
+  --card-foreground: oklch(0.18 0.04 270);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 255);
-  --primary: oklch(0.32 0.09 258);
-  --primary-foreground: oklch(0.985 0.006 80);
-  --secondary: oklch(0.96 0.008 80);
-  --secondary-foreground: oklch(0.22 0.06 255);
-  --muted: oklch(0.95 0.008 80);
-  --muted-foreground: oklch(0.46 0.02 255);
-  --accent: oklch(0.94 0.04 90);
-  --accent-foreground: oklch(0.22 0.06 255);
-  --destructive: oklch(0.62 0.24 22);
+  --popover-foreground: oklch(0.18 0.04 270);
+  --primary: oklch(0.52 0.19 268);          /* Electric Blue #3B5BDB */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.01 260);
+  --secondary-foreground: oklch(0.22 0.06 270);
+  --muted: oklch(0.95 0.01 260);
+  --muted-foreground: oklch(0.5 0.03 260);
+  --accent: oklch(0.94 0.03 268);
+  --accent-foreground: oklch(0.22 0.06 270);
+  --destructive: oklch(0.62 0.24 22);       /* Crimson */
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.9 0.01 80);
-  --input: oklch(0.92 0.01 80);
-  --ring: oklch(0.72 0.12 85);
-  --positive: oklch(0.62 0.15 160);
+  --border: oklch(0.91 0.01 260);
+  --input: oklch(0.93 0.01 260);
+  --ring: oklch(0.52 0.19 268);
+  --positive: oklch(0.7 0.17 165);          /* Emerald */
   --positive-foreground: oklch(0.99 0 0);
-  --negative: oklch(0.6 0.22 24);
+  --negative: oklch(0.65 0.24 22);          /* Crimson */
   --negative-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.78 0.14 80);
+  --warning: oklch(0.78 0.16 70);           /* Amber */
   --warning-foreground: oklch(0.2 0.05 70);
-  --gold: oklch(0.78 0.12 85);
-  --gold-foreground: oklch(0.18 0.04 255);
-  --chart-1: oklch(0.78 0.12 85);
-  --chart-2: oklch(0.62 0.15 160);
-  --chart-3: oklch(0.6 0.22 24);
-  --chart-4: oklch(0.42 0.1 258);
-  --chart-5: oklch(0.5 0.06 258);
-  --sidebar: oklch(0.98 0.006 80);
-  --sidebar-foreground: oklch(0.18 0.04 255);
-  --sidebar-primary: oklch(0.32 0.09 258);
-  --sidebar-primary-foreground: oklch(0.985 0.006 80);
-  --sidebar-accent: oklch(0.94 0.04 90);
-  --sidebar-accent-foreground: oklch(0.22 0.06 255);
-  --sidebar-border: oklch(0.9 0.01 80);
-  --sidebar-ring: oklch(0.78 0.12 85);
+  --chart-1: oklch(0.52 0.19 268);
+  --chart-2: oklch(0.7 0.17 165);
+  --chart-3: oklch(0.65 0.24 22);
+  --chart-4: oklch(0.78 0.16 70);
+  --chart-5: oklch(0.6 0.18 300);
+  --sidebar: oklch(0.98 0.004 260);
+  --sidebar-foreground: oklch(0.18 0.04 270);
+  --sidebar-primary: oklch(0.52 0.19 268);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.94 0.03 268);
+  --sidebar-accent-foreground: oklch(0.22 0.06 270);
+  --sidebar-border: oklch(0.91 0.01 260);
+  --sidebar-ring: oklch(0.52 0.19 268);
 }
 
 .dark {
-  /* Dark theme — Deep navy base, warm gold accent (institutional finance) */
-  --background: oklch(0.16 0.025 258);
-  --foreground: oklch(0.96 0.006 80);
-  --card: oklch(0.21 0.03 258);
-  --card-foreground: oklch(0.96 0.006 80);
-  --popover: oklch(0.21 0.03 258);
-  --popover-foreground: oklch(0.96 0.006 80);
-  --primary: oklch(0.82 0.13 82);
-  --primary-foreground: oklch(0.15 0.03 258);
-  --secondary: oklch(0.26 0.03 258);
-  --secondary-foreground: oklch(0.96 0.006 80);
-  --muted: oklch(0.26 0.03 258);
-  --muted-foreground: oklch(0.72 0.015 80);
-  --accent: oklch(0.3 0.05 258);
-  --accent-foreground: oklch(0.96 0.006 80);
-  --destructive: oklch(0.65 0.22 24);
+  /* Dark theme — Charcoal #0F1117 / Surface #1C1F26 */
+  --background: oklch(0.16 0.01 270);
+  --foreground: oklch(0.98 0.003 260);
+  --card: oklch(0.22 0.014 268);
+  --card-foreground: oklch(0.98 0.003 260);
+  --popover: oklch(0.22 0.014 268);
+  --popover-foreground: oklch(0.98 0.003 260);
+  --primary: oklch(0.66 0.18 265);          /* Electric blue, brightened */
+  --primary-foreground: oklch(0.14 0.02 270);
+  --secondary: oklch(0.26 0.02 270);
+  --secondary-foreground: oklch(0.98 0.003 260);
+  --muted: oklch(0.26 0.02 270);
+  --muted-foreground: oklch(0.72 0.02 260);
+  --accent: oklch(0.3 0.05 268);
+  --accent-foreground: oklch(0.98 0.003 260);
+  --destructive: oklch(0.68 0.21 22);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.3 0.035 258);
-  --input: oklch(0.28 0.03 258);
-  --ring: oklch(0.82 0.13 82);
-  --positive: oklch(0.74 0.16 160);
-  --positive-foreground: oklch(0.14 0.02 258);
-  --negative: oklch(0.66 0.22 24);
+  --border: oklch(0.32 0.02 268);
+  --input: oklch(0.3 0.02 268);
+  --ring: oklch(0.66 0.18 265);
+  --positive: oklch(0.75 0.17 165);
+  --positive-foreground: oklch(0.14 0.02 270);
+  --negative: oklch(0.68 0.22 22);
   --negative-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.82 0.13 82);
+  --warning: oklch(0.8 0.16 70);
   --warning-foreground: oklch(0.18 0.04 70);
-  --gold: oklch(0.82 0.13 82);
-  --gold-foreground: oklch(0.15 0.03 258);
-  --chart-1: oklch(0.82 0.13 82);
-  --chart-2: oklch(0.74 0.16 160);
-  --chart-3: oklch(0.66 0.22 24);
-  --chart-4: oklch(0.62 0.12 258);
-  --chart-5: oklch(0.74 0.06 258);
-  --sidebar: oklch(0.18 0.025 258);
-  --sidebar-foreground: oklch(0.96 0.006 80);
-  --sidebar-primary: oklch(0.82 0.13 82);
-  --sidebar-primary-foreground: oklch(0.15 0.03 258);
-  --sidebar-accent: oklch(0.3 0.05 258);
-  --sidebar-accent-foreground: oklch(0.96 0.006 80);
-  --sidebar-border: oklch(0.3 0.035 258);
-  --sidebar-ring: oklch(0.82 0.13 82);
+  --chart-1: oklch(0.66 0.18 265);
+  --chart-2: oklch(0.75 0.17 165);
+  --chart-3: oklch(0.68 0.22 22);
+  --chart-4: oklch(0.8 0.16 70);
+  --chart-5: oklch(0.7 0.2 300);
+  --sidebar: oklch(0.22 0.014 268);
+  --sidebar-foreground: oklch(0.98 0.003 260);
+  --sidebar-primary: oklch(0.66 0.18 265);
+  --sidebar-primary-foreground: oklch(0.14 0.02 270);
+  --sidebar-accent: oklch(0.3 0.05 268);
+  --sidebar-accent-foreground: oklch(0.98 0.003 260);
+  --sidebar-border: oklch(0.32 0.02 268);
+  --sidebar-ring: oklch(0.66 0.18 265);
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
   }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -188,16 +191,6 @@ html, body {
   .font-mono, .num {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.01em;
-  }
-  .font-display {
-    font-family: var(--font-display);
-    letter-spacing: -0.015em;
-    font-weight: 400;
-    line-height: 1.05;
-  }
-  .tracking-kicker {
-    letter-spacing: 0.22em;
   }
 }
 
