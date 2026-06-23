@@ -3,7 +3,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { AppShell } from "@/components/BottomNav";
 import { CommodityCard } from "@/components/CommodityCard";
-import { Sparkline } from "@/components/Sparkline";
 import { changeColor, formatChange, formatPrice } from "@/lib/format";
 import { FEATURED_IDS, type Currency } from "@/lib/commodities";
 import { ALL_ASSETS } from "@/lib/assets";
@@ -213,9 +212,6 @@ function MoversList({
               >
                 <span className="text-base">{c.icon}</span>
                 <span className="flex-1 text-sm font-medium">{c.name}</span>
-                <div className="h-7 w-14 shrink-0">
-                  <Sparkline data={item.sparkline} positive={item.change_pct >= 0} />
-                </div>
                 <div className="text-right">
                   <div className="num text-sm font-semibold">{formatPrice(item.price, currency)}</div>
                   <div className={`num text-[11px] ${changeColor(item.change_pct)}`}>{formatChange(item.change_pct)}</div>
