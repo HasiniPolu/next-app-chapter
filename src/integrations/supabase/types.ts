@@ -14,209 +14,289 @@ export type Database = {
   }
   public: {
     Tables: {
-      ai_forecasts: {
+      emergency_contacts: {
         Row: {
-          commodity_id: string
-          confidence: number | null
-          currency: string
-          direction: string | null
-          generated_at: string
-          horizon: string
-          predicted_price: number | null
-          rationale: string | null
-          sentiment: string | null
-        }
-        Insert: {
-          commodity_id: string
-          confidence?: number | null
-          currency?: string
-          direction?: string | null
-          generated_at?: string
-          horizon: string
-          predicted_price?: number | null
-          rationale?: string | null
-          sentiment?: string | null
-        }
-        Update: {
-          commodity_id?: string
-          confidence?: number | null
-          currency?: string
-          direction?: string | null
-          generated_at?: string
-          horizon?: string
-          predicted_price?: number | null
-          rationale?: string | null
-          sentiment?: string | null
-        }
-        Relationships: []
-      }
-      alerts: {
-        Row: {
-          active: boolean
-          asset_id: string
-          asset_kind: string
-          condition: string
           created_at: string
-          currency: string
           id: string
-          note: string | null
-          threshold: number
-          triggered_at: string | null
-          triggered_price: number | null
-          updated_at: string
+          name: string
+          phone: string
+          relation: string | null
           user_id: string
         }
         Insert: {
-          active?: boolean
-          asset_id: string
-          asset_kind?: string
-          condition: string
           created_at?: string
-          currency?: string
           id?: string
-          note?: string | null
-          threshold: number
-          triggered_at?: string | null
-          triggered_price?: number | null
-          updated_at?: string
+          name: string
+          phone: string
+          relation?: string | null
           user_id: string
         }
         Update: {
-          active?: boolean
-          asset_id?: string
-          asset_kind?: string
-          condition?: string
           created_at?: string
-          currency?: string
           id?: string
-          note?: string | null
-          threshold?: number
-          triggered_at?: string | null
-          triggered_price?: number | null
-          updated_at?: string
+          name?: string
+          phone?: string
+          relation?: string | null
           user_id?: string
         }
         Relationships: []
       }
-      price_history: {
+      hazard_votes: {
         Row: {
-          commodity_id: string
-          currency: string
-          fetched_at: string
-          series: Json
-          timeframe: string
+          created_at: string
+          hazard_id: string
+          id: string
+          user_id: string
         }
         Insert: {
-          commodity_id: string
-          currency: string
-          fetched_at?: string
-          series: Json
-          timeframe: string
+          created_at?: string
+          hazard_id: string
+          id?: string
+          user_id: string
         }
         Update: {
-          commodity_id?: string
-          currency?: string
-          fetched_at?: string
-          series?: Json
-          timeframe?: string
+          created_at?: string
+          hazard_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hazard_votes_hazard_id_fkey"
+            columns: ["hazard_id"]
+            isOneToOne: false
+            referencedRelation: "hazards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hazards: {
+        Row: {
+          category: Database["public"]["Enums"]["hazard_category"]
+          city: string | null
+          created_at: string
+          description: string | null
+          id: string
+          lat: number
+          lng: number
+          location_label: string | null
+          photo_url: string | null
+          reporter_id: string | null
+          severity: number
+          status: Database["public"]["Enums"]["hazard_status"]
+          updated_at: string
+          upvotes: number
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["hazard_category"]
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat: number
+          lng: number
+          location_label?: string | null
+          photo_url?: string | null
+          reporter_id?: string | null
+          severity?: number
+          status?: Database["public"]["Enums"]["hazard_status"]
+          updated_at?: string
+          upvotes?: number
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["hazard_category"]
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          lat?: number
+          lng?: number
+          location_label?: string | null
+          photo_url?: string | null
+          reporter_id?: string | null
+          severity?: number
+          status?: Database["public"]["Enums"]["hazard_status"]
+          updated_at?: string
+          upvotes?: number
         }
         Relationships: []
       }
-      price_snapshots: {
+      hotspots: {
         Row: {
-          change_abs: number | null
-          change_pct: number | null
-          commodity_id: string
-          currency: string
-          fetched_at: string
-          high_24h: number | null
-          low_24h: number | null
-          price: number
-          sparkline: Json | null
+          city: string
+          created_at: string
+          id: string
+          incident_count: number
+          kind: string
+          lat: number
+          lng: number
+          name: string
+          notes: string | null
+          severity: number
         }
         Insert: {
-          change_abs?: number | null
-          change_pct?: number | null
-          commodity_id: string
-          currency: string
-          fetched_at?: string
-          high_24h?: number | null
-          low_24h?: number | null
-          price: number
-          sparkline?: Json | null
+          city: string
+          created_at?: string
+          id?: string
+          incident_count?: number
+          kind?: string
+          lat: number
+          lng: number
+          name: string
+          notes?: string | null
+          severity?: number
         }
         Update: {
-          change_abs?: number | null
-          change_pct?: number | null
-          commodity_id?: string
-          currency?: string
-          fetched_at?: string
-          high_24h?: number | null
-          low_24h?: number | null
-          price?: number
-          sparkline?: Json | null
+          city?: string
+          created_at?: string
+          id?: string
+          incident_count?: number
+          kind?: string
+          lat?: number
+          lng?: number
+          name?: string
+          notes?: string | null
+          severity?: number
         }
         Relationships: []
       }
       profiles: {
         Row: {
           avatar_url: string | null
+          city: string | null
           created_at: string
           currency: string
           display_name: string | null
           id: string
           plan: string
+          safety_score: number
           stripe_customer_id: string | null
           theme: string
           updated_at: string
+          vehicle: string | null
         }
         Insert: {
           avatar_url?: string | null
+          city?: string | null
           created_at?: string
           currency?: string
           display_name?: string | null
           id: string
           plan?: string
+          safety_score?: number
           stripe_customer_id?: string | null
           theme?: string
           updated_at?: string
+          vehicle?: string | null
         }
         Update: {
           avatar_url?: string | null
+          city?: string | null
           created_at?: string
           currency?: string
           display_name?: string | null
           id?: string
           plan?: string
+          safety_score?: number
           stripe_customer_id?: string | null
           theme?: string
           updated_at?: string
+          vehicle?: string | null
         }
         Relationships: []
       }
-      watchlist: {
+      rides: {
         Row: {
-          asset_kind: string
-          commodity_id: string
-          created_at: string
+          avg_speed: number
+          distance_km: number
+          ended_at: string | null
+          harsh_brakes: number
           id: string
-          sort_order: number
+          max_speed: number
+          risk_events: number
+          score: number
+          started_at: string
           user_id: string
         }
         Insert: {
-          asset_kind?: string
-          commodity_id: string
-          created_at?: string
+          avg_speed?: number
+          distance_km?: number
+          ended_at?: string | null
+          harsh_brakes?: number
           id?: string
-          sort_order?: number
+          max_speed?: number
+          risk_events?: number
+          score?: number
+          started_at?: string
           user_id: string
         }
         Update: {
-          asset_kind?: string
-          commodity_id?: string
+          avg_speed?: number
+          distance_km?: number
+          ended_at?: string | null
+          harsh_brakes?: number
+          id?: string
+          max_speed?: number
+          risk_events?: number
+          score?: number
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sos_events: {
+        Row: {
+          id: string
+          lat: number
+          lng: number
+          location_label: string | null
+          notes: string | null
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["sos_status"]
+          triggered_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          lat: number
+          lng: number
+          location_label?: string | null
+          notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["sos_status"]
+          triggered_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          lat?: number
+          lng?: number
+          location_label?: string | null
+          notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["sos_status"]
+          triggered_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
           created_at?: string
           id?: string
-          sort_order?: number
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }
         Relationships: []
@@ -226,10 +306,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "rider" | "admin"
+      hazard_category:
+        | "pothole"
+        | "waterlog"
+        | "broken_road"
+        | "poor_lighting"
+        | "accident_zone"
+        | "construction"
+        | "blind_turn"
+      hazard_status: "active" | "resolved" | "spam"
+      sos_status: "triggered" | "acknowledged" | "resolved" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -356,6 +452,19 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["rider", "admin"],
+      hazard_category: [
+        "pothole",
+        "waterlog",
+        "broken_road",
+        "poor_lighting",
+        "accident_zone",
+        "construction",
+        "blind_turn",
+      ],
+      hazard_status: ["active", "resolved", "spam"],
+      sos_status: ["triggered", "acknowledged", "resolved", "cancelled"],
+    },
   },
 } as const
