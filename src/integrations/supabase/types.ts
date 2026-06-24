@@ -14,6 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_forecasts: {
+        Row: {
+          commodity_id: string
+          confidence: number
+          currency: string
+          direction: string
+          generated_at: string
+          horizon: string
+          id: string
+          predicted_price: number
+          rationale: string
+          sentiment: string
+        }
+        Insert: {
+          commodity_id: string
+          confidence: number
+          currency?: string
+          direction: string
+          generated_at?: string
+          horizon: string
+          id?: string
+          predicted_price: number
+          rationale: string
+          sentiment: string
+        }
+        Update: {
+          commodity_id?: string
+          confidence?: number
+          currency?: string
+          direction?: string
+          generated_at?: string
+          horizon?: string
+          id?: string
+          predicted_price?: number
+          rationale?: string
+          sentiment?: string
+        }
+        Relationships: []
+      }
+      alerts: {
+        Row: {
+          active: boolean
+          asset_id: string
+          asset_kind: string
+          condition: string
+          created_at: string
+          currency: string
+          id: string
+          note: string | null
+          threshold: number
+          triggered_at: string | null
+          triggered_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          asset_id: string
+          asset_kind?: string
+          condition: string
+          created_at?: string
+          currency?: string
+          id?: string
+          note?: string | null
+          threshold: number
+          triggered_at?: string | null
+          triggered_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          asset_id?: string
+          asset_kind?: string
+          condition?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          note?: string | null
+          threshold?: number
+          triggered_at?: string | null
+          triggered_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           created_at: string
@@ -297,6 +384,33 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      watchlist: {
+        Row: {
+          asset_kind: string
+          commodity_id: string
+          created_at: string
+          id: string
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          asset_kind?: string
+          commodity_id: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          asset_kind?: string
+          commodity_id?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
           user_id?: string
         }
         Relationships: []
